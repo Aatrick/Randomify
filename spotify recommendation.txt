@@ -1,0 +1,119 @@
+// Authorization token that must have been created previously. See : https://developer.spotify.com/documentation/web-api/concepts/authorization
+const token = 'BQBUiH3fQwbpvnfTJTlVn1lpOzKtqyNjZLXyH1kGsMFQko8yVQq2xJHkXdDkMK_JKgdn81hMK5wL-OKRJbjIf2fXMGL0RmBfpGfmCx2or0Pksq18MGpekOmsKUArvu27-RKCiXRkrmo0h3jsfpT8-aosPe4ilc8t4FPmBCJY--E3dXop227YDO8eEGReRA0ZYs8tocaSlDDpy9m-rBG9gqBk0P5Zpdy2OAuesshBCnWzJwvEmYVlPtMvUT2v0qHDhwRr6RxK5X4Z-BD7c33cuQdD';
+async function fetchWebApi(endpoint, method, body) {
+  const res = await fetch(`https://api.spotify.com/${endpoint}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    method,
+    body:JSON.stringify(body)
+  });
+  return await res.json();
+}
+
+const topTracksIds = [
+  '0EgLxY52mpGsXETyEsgVlP','3oLe5ZILASG8vU5dxIMfLY','79qOs49qSotfX46OGByR0M','12cZWGf5ZgLcKubEW9mx5q','08E0TIudwefGjA27W4zrnf'
+];
+
+async function getRecommendations(){
+  // Endpoint reference : https://developer.spotify.com/documentation/web-api/reference/get-recommendations
+  return (await fetchWebApi(
+    `v1/recommendations?limit=5&seed_tracks=${topTracksIds.join(',')}`, 'GET'
+  )).tracks;
+}
+
+const recommendedTracks = await getRecommendations();
+console.log(
+  recommendedTracks.map(
+    ({name, artists}) =>
+      `${name} by ${artists.map(artist => artist.name).join(', ')}`
+  )
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Authorization token that must have been created previously. See : https://developer.spotify.com/documentation/web-api/concepts/authorization
+const token = 'BQBUiH3fQwbpvnfTJTlVn1lpOzKtqyNjZLXyH1kGsMFQko8yVQq2xJHkXdDkMK_JKgdn81hMK5wL-OKRJbjIf2fXMGL0RmBfpGfmCx2or0Pksq18MGpekOmsKUArvu27-RKCiXRkrmo0h3jsfpT8-aosPe4ilc8t4FPmBCJY--E3dXop227YDO8eEGReRA0ZYs8tocaSlDDpy9m-rBG9gqBk0P5Zpdy2OAuesshBCnWzJwvEmYVlPtMvUT2v0qHDhwRr6RxK5X4Z-BD7c33cuQdD';
+async function fetchWebApi(endpoint, method, body) {
+  const res = await fetch(`https://api.spotify.com/${endpoint}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    method,
+    body:JSON.stringify(body)
+  });
+  return await res.json();
+}
+
+const tracksUri = [
+  'spotify:track:0EgLxY52mpGsXETyEsgVlP','spotify:track:0pdT2HQxxKGZdSoA6ORuVx','spotify:track:3oLe5ZILASG8vU5dxIMfLY','spotify:track:4vDGc8mD9kHbC2Yy6pF6SE','spotify:track:79qOs49qSotfX46OGByR0M','spotify:track:4JXgJ33UmguXF3F9B5LwlD','spotify:track:12cZWGf5ZgLcKubEW9mx5q','spotify:track:01s7bIE0sb7bKJ1hZfQ0LL','spotify:track:08E0TIudwefGjA27W4zrnf','spotify:track:0LgOdrf5gtT4Q4lAgYABlC'
+];
+
+async function createPlaylist(tracksUri){
+  const { id: user_id } = await fetchWebApi('v1/me', 'GET')
+
+  const playlist = await fetchWebApi(
+    `v1/users/${user_id}/playlists`, 'POST', {
+      "name": "My recommendation playlist",
+      "description": "Playlist created by the tutorial on developer.spotify.com",
+      "public": false
+  })
+
+  await fetchWebApi(
+    `v1/playlists/${playlist.id}/tracks?uris=${tracksUri.join(',')}`,
+    'POST'
+  );
+
+  return playlist;
+}
+
+const createdPlaylist = await createPlaylist(tracksUri);
+console.log(createdPlaylist.name, createdPlaylist.id);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const playlistId = '0ACWfONtQahh9IBGFRwIS4';
+
+<iframe
+  title="Spotify Embed: Recommendation Playlist "
+  src={`https://open.spotify.com/embed/playlist/0ACWfONtQahh9IBGFRwIS4?utm_source=generator&theme=0`}
+  width="100%"
+  height="100%"
+  style={{ minHeight: '360px' }}
+  frameBorder="0"
+  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+  loading="lazy"
+/>
