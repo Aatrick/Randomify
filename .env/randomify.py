@@ -3,6 +3,7 @@ import json
 import webbrowser
 import pandas as pd
 import random 
+import time
 
 from spotipy.oauth2 import SpotifyClientCredentials
 
@@ -40,6 +41,7 @@ def call_playlist(creator, playlist_id):
             playlist_features["album"] = track["track"]["album"]["name"]
             playlist_features["track_name"] = track["track"]["name"]
             playlist_features["track_id"] = track["track"]["id"]
+            playlist_features["track_ms"] = track["track"]["duration_ms"]
             
             audio_features = sp.audio_features(playlist_features["track_id"])[0]
             for feature in playlist_features_list[4:]:
@@ -51,36 +53,19 @@ def call_playlist(creator, playlist_id):
         # Increase the offset by 100 (Spotify's limit per request)
         offset += 100
 
-    return playlist_features['track_id']
+    return playlist_df[['track_name', 'track_ms']]
 
 playlist_songs = call_playlist("Emilio","19807JSM82MpH1Krr2pO7I")
 
-def randomify():
-    for i in range(50):
-        random_song = random.choice(playlist_songs)
-        spotipy.add_to_queue(random_song)
-
-randomify()
-
-#print(json.dumps(user,sort_keys=True, indent=4))
-#while True:
-    #print("Welcome, "+ user['display_name'])
-    #print("0 - Exit")
-    #print("1 - Search for a Playlist")
-    #choice = int(input("Your Choice: "))
-    #if choice == 1:
-    #    # Get the Song Name.
-    #    searchQuery = input("Enter Song Name: ")
-    #    # Search for the Song.
-    #    searchResults = spotifyObject.search(searchQuery,1,0,"track")
-    #    # Get required data from JSON response.
-    #    tracks_dict = searchResults['tracks']
-    #    tracks_items = tracks_dict['items']
-    #    song = tracks_items[0]['external_urls']['spotify']
-    #    # Open the Song in Web Browser
-    #    webbrowser.open(song)
-    #    print('Song has opened in your browser.')
-    #elif choice == 0:
-    #    break
-    #else:
-    #    print("Enter valid choice.")
+while True:
+    track = random.choice(playlist_songs)
+    track_name = track['track_name']
+    track_duration = track['track_ms'] / 1000
+    searchQuery = track_name
+    searchResults = spotifyObject.search(searchQuery,1,0,"track")
+    tracks_dict = searchResults['tracks']
+    tracks_items = tracks_dict['items']
+    song = tracks_items[0]['external_urls']['spotify']
+    webbrowser.open(song)
+    print(f"Now playing: {track_name}")
+    time.sleep(track_duration)
