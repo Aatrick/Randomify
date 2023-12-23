@@ -8,17 +8,17 @@ from spotipy.oauth2 import SpotifyClientCredentials
 
 username = 'Emilio'
 clientID = 'f956c798c044418b9204fe6fc9d303ed'
-clientSecret = '2ca670fe32204c5c926f4161cc5c5ed2'
+clientSecret = '5ca12d350e574940852ab5dde947abdd'
 redirectURI = 'http://google.com/' 
 
-#oauth_object = spotipy.SpotifyOAuth(clientID,clientSecret,redirectURI)
-#token_dict = oauth_object.get_access_token()
-#token = token_dict['access_token']
-#spotifyObject = spotipy.Spotify(auth=token)
-#user = spotifyObject.current_user()
+oauth_object = spotipy.SpotifyOAuth(clientID,clientSecret,redirectURI)
+token_dict = oauth_object.get_access_token()
+token = token_dict['access_token']
+spotifyObject = spotipy.Spotify(auth=token)
+user = spotifyObject.current_user()
+
 
 client_credentials_manager = SpotifyClientCredentials(client_id=clientID, client_secret=clientSecret)
-
 sp = spotipy.Spotify(client_credentials_manager = client_credentials_manager)
 
 
@@ -53,7 +53,14 @@ def call_playlist(creator, playlist_id):
 
     return playlist_features['track_id']
 
-call_playlist("Emilio","19807JSM82MpH1Krr2pO7I")
+playlist_songs = call_playlist("Emilio","19807JSM82MpH1Krr2pO7I")
+
+def randomify():
+    for i in range(50):
+        random_song = random.choice(playlist_songs)
+        spotipy.add_to_queue(random_song)
+
+randomify()
 
 #print(json.dumps(user,sort_keys=True, indent=4))
 #while True:
