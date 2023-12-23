@@ -15,18 +15,18 @@ clientSecret = '5ca12d350e574940852ab5dde947abdd'
 redirectURI = 'http://google.com/' 
 
 oauth_object = spotipy.SpotifyOAuth(clientID, clientSecret, redirectURI)
-#try:
-#    token_dict = oauth_object.get_cached_token()
-#except spotipy.oauth2.MaxRetries:
-#    print("Max Retries reached")
-#    # Handle the MaxRetries exception here
-#except spotipy.oauth2.ResponseError as e:
-#    if e.status == 429:
-#        print("Too many 429 error responses")
-#        # Handle the ResponseError exception here
-#    else:
-#        raise e
-token_dict = oauth_object.get_access_token() 
+try:
+    token_dict = oauth_object.get_cached_token()
+except spotipy.oauth2.MaxRetries:
+    print("Max Retries reached")
+    # Handle the MaxRetries exception here
+except spotipy.oauth2.ResponseError as e:
+    if e.status == 429:
+        print("Too many 429 error responses")
+        # Handle the ResponseError exception here
+    else:
+        raise e
+#token_dict = oauth_object.get_access_token() 
 token = token_dict['access_token']
 spotifyObject = spotipy.Spotify(auth=token)
 user = spotifyObject.current_user()
