@@ -9,7 +9,7 @@ from pynput.keyboard import Key, Controller
 
 keyboard = Controller()
 
-username = 'Emilio'
+username = ''
 clientID = ''
 clientSecret = ''
 redirectURI = 'http://google.com/' 
