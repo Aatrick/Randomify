@@ -10,8 +10,8 @@ from pynput.keyboard import Key, Controller
 keyboard = Controller()
 
 username = 'Emilio'
-clientID = 'f956c798c044418b9204fe6fc9d303ed'
-clientSecret = '5ca12d350e574940852ab5dde947abdd'
+clientID = ''
+clientSecret = ''
 redirectURI = 'http://google.com/' 
 
 oauth_object = spotipy.SpotifyOAuth(clientID, clientSecret, redirectURI)
