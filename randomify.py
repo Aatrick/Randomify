@@ -6,6 +6,7 @@ import pandas as pd
 import random 
 import time
 from pynput.keyboard import Key, Controller
+import asyncio
 
 keyboard = Controller()
 
@@ -56,16 +57,39 @@ def get_tracks(playlist_id):
 
 playlist_songs=get_tracks("19807JSM82MpH1Krr2pO7I")
 
-while True:
-    track = random.choice(playlist_songs)
-    track_id = track[0]
-    track_name = track[1]
-    track_artist = track[2]
-    track_duration = track[3]
-    song = f"https://open.spotify.com/track/{track_id}"
-    webbrowser.open(song)
-    time.sleep(2)
-    keyboard.press(Key.enter)
-    keyboard.release(Key.enter)
-    print(f"Now playing: {track_name} \nfrom {track_artist}\n")
-    time.sleep(track_duration)
+pause_flag = False
+
+async def user_input():
+    global pause_flag
+    while True:
+        if pause_flag:
+            print("Paused")
+            if input() == "p":
+                pause_flag = False
+                print("Resuming")
+        await asyncio.sleep(1)
+
+async def play_random_song():
+    global pause_flag
+    while True:
+        if not pause_flag:
+            track = random.choice(playlist_songs)
+            track_id = track[0]
+            track_name = track[1]
+            track_artist = track[2]
+            track_duration = track[3]
+            song = f"https://open.spotify.com/track/{track_id}"
+            webbrowser.open(song)
+            time.sleep(2)
+            keyboard.press(Key.enter)
+            keyboard.release(Key.enter)
+            print(f"Now playing: {track_name} \nfrom {track_artist}\n")
+            if input() == "p":
+                pause_flag = True
+            time.sleep(track_duration)
+        await asyncio.sleep(1)
+
+async def main():
+    await asyncio.gather(play_random_song(), user_input())
+
+asyncio.run(main())
